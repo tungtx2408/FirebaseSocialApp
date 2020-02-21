@@ -20,12 +20,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/tilPassword"
-        android:hint="Email">
+        android:hint="Email"
+        android:nextFocusDown="@id/tilPassword">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/tiEdtEmail"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:maxLines="1" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -41,15 +44,26 @@
             android:id="@+id/tiEdtPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:maxLines="1" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/btnSignInp"
+        android:id="@+id/btnSignIn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tilPassword"
         android:layout_centerHorizontal="true"
         android:text="Đăng nhập" />
+
+    <TextView
+        android:id="@+id/tvNotHaveAcct"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnSignIn"
+        android:layout_marginTop="10dp"
+        android:text="Chưa có tài khoản? Đăng kí"
+        android:textAlignment="center"
+        android:textColor="@color/colorBlack" />
 
 </RelativeLayout>

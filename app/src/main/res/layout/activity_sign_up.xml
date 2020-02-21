@@ -24,11 +24,11 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/tiEdtEmail"
-            android:nextFocusDown="@id/tilPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
-            android:maxLines="1" />
+            android:maxLines="1"
+            android:nextFocusDown="@id/tilPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -55,5 +55,15 @@
         android:layout_below="@id/tilPassword"
         android:layout_centerHorizontal="true"
         android:text="Đăng Ký" />
+
+    <TextView
+        android:id="@+id/tvHaveAcct"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnSignUp"
+        android:layout_marginTop="10dp"
+        android:text="Đã có tài khoản? Đăng nhập"
+        android:textAlignment="center"
+        android:textColor="@color/colorBlack" />
 
 </RelativeLayout>

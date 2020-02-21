@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,6 +25,7 @@ public class SignUpActivity extends AppCompatActivity {
     //view
     TextInputEditText tiEdtEmail, tiEdtPassword;
     Button btnSignUp;
+    TextView tvHaveAcct;
 
     //progress dialog
     ProgressDialog progressDialog;
@@ -47,6 +49,7 @@ public class SignUpActivity extends AppCompatActivity {
         tiEdtEmail = findViewById(R.id.tiEdtEmail);
         tiEdtPassword = findViewById(R.id.tiEdtPassword);
         btnSignUp = findViewById(R.id.btnSignUp);
+        tvHaveAcct = findViewById(R.id.tvHaveAcct);
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Đăng ký...");
 
@@ -69,6 +72,14 @@ public class SignUpActivity extends AppCompatActivity {
                 } else {
                     registerUser(email, password);
                 }
+            }
+        });
+
+        tvHaveAcct.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(SignUpActivity.this, SignInActivity.class));
+                finish();
             }
         });
     }
