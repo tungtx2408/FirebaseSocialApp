@@ -1,12 +1,16 @@
 package com.example.firebasesocialapp;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,7 +30,7 @@ public class SignInActivity extends AppCompatActivity {
     //views
     EditText tiEdtEmail, tiEdtPassword;
     Button btnSignIn;
-    TextView tvNotHaveAcct;
+    TextView tvNotHaveAcct, tvRecoverPassword;
 
     //progress dialog
     ProgressDialog progressDialog;
@@ -51,6 +55,7 @@ public class SignInActivity extends AppCompatActivity {
         tiEdtPassword = findViewById(R.id.tiEdtPassword);
         btnSignIn = findViewById(R.id.btnSignIn);
         tvNotHaveAcct = findViewById(R.id.tvNotHaveAcct);
+        tvRecoverPassword = findViewById(R.id.tvRecoverPassword);
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Đăng nhập...");
 
@@ -86,9 +91,77 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
 
+        tvRecoverPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showRecoverPasswordDialog();
+            }
+        });
+
+    }
+
+    private void showRecoverPasswordDialog() {
+
+        final EditText edtEmail = new EditText(this);
+        edtEmail.setHint("Email");
+        edtEmail.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        edtEmail.setMinEms(16);
+
+        LinearLayout linearLayout = new LinearLayout(this);
+        linearLayout.addView(edtEmail);
+        linearLayout.setPadding(10, 10, 10, 10);
+
+        progressDialog.setMessage("Đang gửi email...");
+
+
+
+        final AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setTitle("Khôi phục mật khẩu!")
+                .setView(linearLayout)
+                .setPositiveButton("Gửi", null)
+                .setNegativeButton("Hủy", null)
+                .show();
+
+        Button dialogPositiveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+
+        dialogPositiveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String email = edtEmail.getText().toString().trim();
+                if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                    edtEmail.setError("Sai định dạng email!");
+                } else {
+                    sendEmail(email);
+                }
+            }
+        });
+    }
+
+    private void sendEmail(String email) {
+        progressDialog.show();
+        firebaseAuth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(SignInActivity.this, "Gửi thành công!", Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
+                } else {
+                    Toast.makeText(SignInActivity.this, "Thất bại...", Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
+
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(SignInActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+            }
+        });
     }
 
     private void signInUser(String email, String password) {
+        progressDialog.setMessage("Đăng nhập...");
         progressDialog.show();
         firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {

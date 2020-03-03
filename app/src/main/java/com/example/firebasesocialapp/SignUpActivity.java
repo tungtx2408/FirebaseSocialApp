@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -24,6 +25,7 @@ import com.google.firebase.auth.FirebaseUser;
 public class SignUpActivity extends AppCompatActivity {
     //view
     TextInputEditText tiEdtEmail, tiEdtPassword;
+    TextInputLayout tilEmail, tilPassword;
     Button btnSignUp;
     TextView tvHaveAcct;
 
@@ -35,6 +37,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
@@ -48,10 +51,15 @@ public class SignUpActivity extends AppCompatActivity {
         //init
         tiEdtEmail = findViewById(R.id.tiEdtEmail);
         tiEdtPassword = findViewById(R.id.tiEdtPassword);
+        tilEmail = findViewById(R.id.tilEmail);
+        tilPassword = findViewById(R.id.tilPassword);
         btnSignUp = findViewById(R.id.btnSignUp);
         tvHaveAcct = findViewById(R.id.tvHaveAcct);
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Đăng ký...");
+
+        tiEdtEmail.requestFocus();
+
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
@@ -60,16 +68,14 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //inputs
+                //validations
+
                 String email = tiEdtEmail.getText().toString().trim();
                 String password = tiEdtPassword.getText().toString().trim();
-                //validations
-                if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                    tiEdtEmail.setError("Email không hợp lệ!");
-                    tiEdtEmail.requestFocus();
-                } else if (password.length() < 6) {
-                    tiEdtPassword.setError("Mật khẩu phải có tối thiểu 6 kí tự!");
-                    tiEdtPassword.requestFocus();
-                } else {
+
+                setTextError(tilEmail, isCorrectEmail(email));
+                setTextError(tilPassword, isCorrectEmail(password));
+                if (isCorrectEmail(email) == null && isCorrectPassword(password) == null) {
                     registerUser(email, password);
                 }
             }
@@ -82,6 +88,28 @@ public class SignUpActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    private String isCorrectEmail(String email) {
+        if (email.isEmpty()) {
+            return "Email không được để trống";
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            return "Email không đúng định dạng!";
+        } else {
+            return null;
+        }
+    }
+
+    private String isCorrectPassword(String password) {
+        if (password.length() < 6) {
+            return "Mật khẩu phải có tối thiểu 6 kí tự!";
+        } else {
+            return null;
+        }
+    }
+
+    private void setTextError(TextInputLayout tilView, String messgage) {
+        tilView.setError(messgage);
     }
 
     private void registerUser(String email, String password) {
